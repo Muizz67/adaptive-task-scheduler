@@ -1,39 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Schedule Table</title>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule Table</title>
 
-        <!-- Bootstrap CSS -->
-        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-        
-        <!-- Custom CSS -->
-        <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Flatpickr CSS for custom date picker -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
-        <script>
-            window.watsonAssistantChatOptions = {
-            integrationID: "84c4987e-0293-4808-a90a-daea336c2082", // The ID of this integration.
-            region: "us-south", // The region your integration is hosted in.
-            serviceInstanceID: "41e2d90e-a09d-490a-be1f-f2bce29235cd", // The ID of your service instance.
-            onLoad: async (instance) => { await instance.render(); }
-            };
-            setTimeout(function(){
-            const t=document.createElement('script');
-            t.src="https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
-            document.head.appendChild(t);
-            });
-        </script>
-    </head>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
 
-    <div class="container">
-        <div class="w-95 w-md-75 w-lg-60 w-xl-55 mx-auto mb-6 text-center">
-            <h2 class="display-18 display-md-16 display-lg-14 mb-0">Committed to fabulous and great <span class="text-primary">#Timetable</span></h2>
+    <script>
+        window.watsonAssistantChatOptions = {
+        integrationID: "84c4987e-0293-4808-a90a-daea336c2082",
+        region: "us-south",
+        serviceInstanceID: "41e2d90e-a09d-490a-be1f-f2bce29235cd",
+        onLoad: async (instance) => { await instance.render(); }
+        };
+        setTimeout(function(){
+        const t=document.createElement('script');
+        t.src="https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
+        document.head.appendChild(t);
+        });
+    </script>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Heading centered -->
+        <div class="row mb-3">
+            <div class="col-md-2"></div> <!-- Empty column for alignment -->
+            <div class="col-md-7 text-center">
+                <h2 class="display-18 display-md-16 display-lg-14 mb-0">Committed to fabulous and great <span class="text-primary">#Timetable</span></h2>
+            </div>
+            <div class="col-md-3"></div> <!-- Empty column for alignment -->
         </div>
+
         <div class="row">
-            <div class="col-md-12">
+            <!-- Left Column for Calendar and Buttons -->
+            <div class="col-md-2">
+                <!-- Calendar -->
+                <div id="calendar" class="mb-4"></div> <!-- Inline calendar container -->
+
+                <!-- Buttons -->
+                <div class="d-flex flex-column mt-3">
+                    <button class="btn btn-lg mb-3 w-100" style="background-color: #131E3A; border-color: #281E5D;  color: white;">
+                        Add <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg ms-2" viewBox="0 0 16 16">
+                            <path fill-rule="evenodd" d="M8 2a.5.5 0 0 1 .5.5v5h5a.5.5 0 0 1 0 1h-5v5a.5.5 0 0 1-1 0v-5h-5a.5.5 0 0 1 0-1h5v-5A.5.5 0 0 1 8 2"/>
+                        </svg>
+                    </button>
+                    <button class="btn btn-warning btn-lg mb-3 w-100" style="background-color: #131E3A; border-color: #281E5D;  color: white;">
+                        Edit <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                             <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                             <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                          </svg>
+                    </button>
+                    <button class="btn btn-danger btn-lg mb-3 w-100" style="background-color: #FF0000; border-color: #FF0000; color: white;">
+                        Delete <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                               <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                               <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                      </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Middle Column for Schedule Table (reduced to col-md-7) -->
+            <div class="col-md-7">
                 <div class="schedule-table">
-                    <!-- <button type="button" class="btn btn-primary">Primary</button> -->
                     <table class="table bg-white">
                         <thead>
                             <tr>
@@ -199,7 +235,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td class="day">Satarday</td>
+                                <td class="day">Saturday</td>
                                 <td></td>
                                 <td></td>
                                 <td class="active">
@@ -254,10 +290,32 @@
                                 </td>
                                 <td></td>
                             </tr>
+                            <!-- Additional Rows -->
                         </tbody>
                     </table>
                 </div>
             </div>
+
+            <!-- Right Column (empty to create space) -->
+            <div class="col-md-3"></div>
         </div>
     </div>
+
+    <!-- Bootstrap JS (optional for modals, etc.) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Flatpickr JS for custom date picker -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+        // Initialize Flatpickr for inline calendar
+        flatpickr("#calendar", {
+            inline: true, // Display the calendar inline
+            dateFormat: "Y-m-d", // Format as needed
+            defaultDate: "today"
+        });
+    </script>
+</body>
 </html>
