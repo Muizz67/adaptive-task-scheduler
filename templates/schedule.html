@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schedule Table</title>
+    <title>Adaptive Task Scheduler</title>
 
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
@@ -13,37 +13,60 @@
 
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
-
-    <script>
-        window.watsonAssistantChatOptions = {
-        integrationID: "84c4987e-0293-4808-a90a-daea336c2082",
-        region: "us-south",
-        serviceInstanceID: "41e2d90e-a09d-490a-be1f-f2bce29235cd",
-        onLoad: async (instance) => { await instance.render(); }
-        };
-        setTimeout(function(){
-        const t=document.createElement('script');
-        t.src="https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
-        document.head.appendChild(t);
-        });
-    </script>
 </head>
 <body>
     <div class="container-fluid">
         <!-- Heading centered -->
         <div class="row mb-3">
             <div class="col-md-2"></div> <!-- Empty column for alignment -->
-            <div class="col-md-7 text-center">
-                <h2 class="display-18 display-md-16 display-lg-14 mb-0">Committed to fabulous and great <span class="text-primary">#Timetable</span></h2>
+            <div class="col-md-9 text-center">
+                <h2 class="display-18 display-md-16 display-lg-14 mb-0">Adaptive Task Scheduler</h2>
             </div>
-            <div class="col-md-3"></div> <!-- Empty column for alignment -->
         </div>
 
         <div class="row">
+            <div class="col-md-8 offset-md-1">
+                <div class="schedule-table">
+                    <table class="table bg-white">
+                        <thead>
+                            <tr>
+                                <th>Monday</th>
+                                <th>Tuesday</th>
+                                <th>Wednesday</th>
+                                <th>Thursday</th>
+                                <th>Friday</th>
+                                <th>Saturday</th>
+                                <th class="last">Sunday</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                {% for day in ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"] %}
+                                <td>
+                                    {% if tasks[day] %}
+                                        {% for task in tasks[day] %}
+                                        <div class="task">
+                                            <strong>{{ task['TaskName'] }}</strong><br>
+                                            <span>{{ task['StartTime'] }} - {{ task['EndTime'] }}</span><br>
+                                            <em>{{ task['Description'] }}</em>
+                                        </div>
+                                        <hr>
+                                        {% endfor %}
+                                    {% else %}
+                                        No tasks
+                                    {% endif %}
+                                </td>
+                                {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
             <!-- Left Column for Calendar and Buttons -->
             <div class="col-md-2">
                 <!-- Calendar -->
-                <div id="calendar" class="mb-4"></div> <!-- Inline calendar container -->
+                <div id="calendar"></div> <!-- Inline calendar container -->
 
                 <!-- Buttons -->
                 <div class="d-flex flex-column mt-3">
@@ -54,250 +77,18 @@
                     </button>
                     <button class="btn btn-warning btn-lg mb-3 w-100" style="background-color: #131E3A; border-color: #281E5D;  color: white;">
                         Edit <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-                             <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                             <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
-                          </svg>
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                        </svg>
                     </button>
                     <button class="btn btn-danger btn-lg mb-3 w-100" style="background-color: #FF0000; border-color: #FF0000; color: white;">
                         Delete <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                               <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
-                               <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
-                      </svg>
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+                            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+                    </svg>
                     </button>
                 </div>
             </div>
-
-            <!-- Middle Column for Schedule Table (reduced to col-md-7) -->
-            <div class="col-md-7">
-                <div class="schedule-table">
-                    <table class="table bg-white">
-                        <thead>
-                            <tr>
-                                <th>Routine</th>
-                                <th>10 am</th>
-                                <th>11 am</th>
-                                <th>03 pm</th>
-                                <th>05 pm</th>
-                                <th class="last">07 pm</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td class="day">Monday</td>
-                                <td></td>
-                                <td class="active">
-                                    <h4>Cycling</h4>
-                                    <p>11 am - 12 pm</p>
-                                    <div class="hover">
-                                        <h4>Cycling</h4>
-                                        <p>11 am - 12 pm</p>
-                                        <span>Tabitha Potter</span>
-                                    </div>
-                                </td>
-                                <td class="active">
-                                    <h4>Karate</h4>
-                                    <p>03 pm - 05 pm</p>
-                                    <div class="hover">
-                                        <h4>Karate</h4>
-                                        <p>03 pm - 05 pm</p>
-                                        <span>Lester Gray</span>
-                                    </div>
-                                </td>
-                                <td></td>
-                                <td class="active">
-                                    <h4>Crossfit</h4>
-                                    <p>07 pm - 08 pm</p>
-                                    <div class="hover">
-                                        <h4>Crossfit</h4>
-                                        <p>07 pm - 08 pm</p>
-                                        <span>Candi Yip</span>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="day">Tuesday</td>
-                                <td class="active">
-                                    <h4>Spinning</h4>
-                                    <p>10 am - 11 am</p>
-                                    <div class="hover">
-                                        <h4>Spinning</h4>
-                                        <p>10 am - 11 am</p>
-                                        <span>Mary Cass</span>
-                                    </div>
-                                </td>
-                                <td></td>
-                                <td></td>
-                                <td class="active">
-                                    <h4>Bootcamp</h4>
-                                    <p>05 pm - 06 pm</p>
-                                    <div class="hover">
-                                        <h4>Bootcamp</h4>
-                                        <p>05 pm - 06 pm</p>
-                                        <span>Brenda Mastropietro</span>
-                                    </div>
-                                </td>
-                                <td class="active">
-                                    <h4>Boxercise</h4>
-                                    <p>07 pm - 08 pm</p>
-                                    <div class="hover">
-                                        <h4>Boxercise</h4>
-                                        <p>07 pm - 08 pm</p>
-                                        <span>Marlene Bruce</span>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="day">Wednesday</td>
-                                <td class="active">
-                                    <h4>Body Building</h4>
-                                    <p>10 am - 12 pm</p>
-                                    <div class="hover">
-                                        <h4>Body Building</h4>
-                                        <p>10 am - 12 pm</p>
-                                        <span>Brenda Hester</span>
-                                    </div>
-                                </td>
-                                <td></td>
-                                <td class="active">
-                                    <h4>Dance</h4>
-                                    <p>03 pm - 05 pm</p>
-                                    <div class="hover">
-                                        <h4>Dance</h4>
-                                        <p>03 pm - 05 pm</p>
-                                        <span>Brian Ashworth</span>
-                                    </div>
-                                </td>
-                                <td></td>
-                                <td class="active">
-                                    <h4>Health</h4>
-                                    <p>07 pm - 08 pm</p>
-                                    <div class="hover">
-                                        <h4>Health</h4>
-                                        <p>07 pm - 08 pm</p>
-                                        <span>Mark Croteau</span>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="day">Thursday</td>
-                                <td></td>
-                                <td class="active">
-                                    <h4>Bootcamp</h4>
-                                    <p>11 am - 12 pm</p>
-                                    <div class="hover">
-                                        <h4>Bootcamp</h4>
-                                        <p>1 am - 12 pm</p>
-                                        <span>Elisabeth Schreck</span>
-                                    </div>
-                                </td>
-                                <td></td>
-                                <td class="active">
-                                    <h4>Boday Building</h4>
-                                    <p>05 pm - 06 pm</p>
-                                    <div class="hover">
-                                        <h4>Boday Building</h4>
-                                        <p>05 pm - 06 pm</p>
-                                        <span>Edward Garcia</span>
-                                    </div>
-                                </td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td class="day">Friday</td>
-                                <td class="active">
-                                    <h4>Racing</h4>
-                                    <p>10 am - 11 am</p>
-                                    <div class="hover">
-                                        <h4>Racing</h4>
-                                        <p>10 am - 11 am</p>
-                                        <span>Jackie Potts</span>
-                                    </div>
-                                </td>
-                                <td></td>
-                                <td class="active">
-                                    <h4>Energy Blast</h4>
-                                    <p>03 pm - 05 pm</p>
-                                    <div class="hover">
-                                        <h4>Energy Blast</h4>
-                                        <p>03 pm - 05 pm</p>
-                                        <span>Travis Brown</span>
-                                    </div>
-                                </td>
-                                <td></td>
-                                <td class="active">
-                                    <h4>Jumping</h4>
-                                    <p>07 pm - 08 pm</p>
-                                    <div class="hover">
-                                        <h4>Jumping</h4>
-                                        <p>07 pm - 08 pm</p>
-                                        <span>Benjamin Barnett</span>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td class="day">Saturday</td>
-                                <td></td>
-                                <td></td>
-                                <td class="active">
-                                    <h4>Aerobics</h4>
-                                    <p>03 pm - 04 pm</p>
-                                    <div class="hover">
-                                        <h4>Aerobics</h4>
-                                        <p>03 pm - 04 pm</p>
-                                        <span>Andre Walls</span>
-                                    </div>
-                                </td>
-                                <td class="active">
-                                    <h4>Cycling</h4>
-                                    <p>05 pm - 06 pm</p>
-                                    <div class="hover">
-                                        <h4>Cycling</h4>
-                                        <p>05 pm - 06 pm</p>
-                                        <span>Margaret Thomas</span>
-                                    </div>
-                                </td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td class="day">Sunday</td>
-                                <td class="active">
-                                    <h4>Weight Loss</h4>
-                                    <p>10 am - 11 am</p>
-                                    <div class="hover">
-                                        <h4>Weight Loss</h4>
-                                        <p>10 am - 11 am</p>
-                                        <span>Wayne Ponce</span>
-                                    </div>
-                                </td>
-                                <td></td>
-                                <td class="active">
-                                    <h4>Yoga</h4>
-                                    <p>03 pm - 04 pm</p>
-                                    <div class="hover">
-                                        <h4>Yoga</h4>
-                                        <p>03 pm - 04 pm</p>
-                                        <span>Francisco Watt</span>
-                                    </div>
-                                </td>
-                                <td class="active">
-                                    <h4>Boxing</h4>
-                                    <p>05 pm - 06 pm</p>
-                                    <div class="hover">
-                                        <h4>Boxing</h4>
-                                        <p>05 pm - 046am</p>
-                                        <span>Charles King</span>
-                                    </div>
-                                </td>
-                                <td></td>
-                            </tr>
-                            <!-- Additional Rows -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Right Column (empty to create space) -->
-            <div class="col-md-3"></div>
         </div>
     </div>
 
@@ -315,6 +106,125 @@
             inline: true, // Display the calendar inline
             dateFormat: "Y-m-d", // Format as needed
             defaultDate: "today"
+        });
+    </script>
+
+    <script>
+        async function fetchTask(taskData) {
+            try {
+                const response = await fetch('/tasks')
+                if (!response.ok) { throw new Error('Failed to fetch tasks'); }
+                const tasks = await response.json();
+                updateTable(tasks);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function updateTable(tasks) {
+            // Get references to each day column in the table
+            const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+            
+            // Loop through each day and update the corresponding column
+            days.forEach(day => {
+                const dayCell = document.querySelector(`td:nth-child(${days.indexOf(day) + 1})`);
+                dayCell.innerHTML = ''; // Clear the existing content for the day
+        
+                // If tasks exist for the current day, add them
+                if (tasks[day]) {
+                    tasks[day].forEach(task => {
+                        const taskDiv = document.createElement('div');
+                        taskDiv.classList.add('task');
+                        
+                        taskDiv.innerHTML = `
+                            <strong>${task.TaskName}</strong><br>
+                            <span>${task.StartTime} - ${task.EndTime}</span><br>
+                            <em>${task.Description}</em>
+                        `;
+                        
+                        dayCell.appendChild(taskDiv);
+                        dayCell.appendChild(document.createElement('hr')); // Add a horizontal line between tasks
+                    });
+                } else {
+                    // If no tasks exist for the current day, show a message
+                    dayCell.innerHTML = 'No tasks';
+                }
+            });
+        }
+
+        // Start polling for updates every 5 seconds
+        setInterval(fetchTask, 5000);  // Adjust the polling interval if needed
+
+        function taskAddHandler(event) {
+            const TaskName = event.data.context.skills['actions skill'].action_variables.step_276;
+            const StartTime = event.data.context.skills['actions skill'].action_variables.step_337.value;
+            const EndTime = event.data.context.skills['actions skill'].action_variables.step_468.value;
+            const Date = event.data.context.skills['actions skill'].action_variables.step_537.value;
+            const Priority = event.data.context.skills['actions skill'].action_variables.step_464;
+            const Status = 'Pending' // default
+            const Description = event.data.context.skills['actions skill'].action_variables.step_341;
+            const Reschedule = event.data.context.skills['actions skill'].action_variables.step_341;
+
+            addTask({ TaskName, StartTime, EndTime, Date, Priority, Status, Description, Reschedule })
+            console.log({ TaskName, StartTime, EndTime, Date, Priority, Status, Description, Reschedule })
+        }
+
+        async function addTask(taskData) {
+            try {
+                const response = await fetch('/add-task', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(taskData),
+                });
+
+                if (response.ok) {
+                    console.log('Task added successfully');
+                } else {
+                    console.error('Failed to add task');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function onLoad(instance) {
+            // Listen for the userDefinedResponse event that will allow us to create content for the user defined response when one is
+            // received. See https://web-chat.global.assistant.watson.cloud.ibm.com/docs.html?to=api-events#summary for more
+            // about our events.
+            instance.on({
+                type: 'send',
+                handler: (event, instance) => {
+                    // console.log(event.data.context.skills['actions skill'].action_variables)
+                    
+                    // First run ignore this if statement
+                    if(!event.data.context.skills['actions skill'].action_variables) { }
+                    else if (
+                        event.data.context.skills['actions skill'].action_variables.step_276 && 
+                        event.data.context.skills['actions skill'].action_variables.step_337 &&
+                        event.data.context.skills['actions skill'].action_variables.step_468 &&
+                        event.data.context.skills['actions skill'].action_variables.step_537 &&
+                        event.data.context.skills['actions skill'].action_variables.step_341
+                        )
+                    { taskAddHandler(event); }
+                },
+            });
+            await instance.render();
+          }
+
+        // web chat config
+        window.watsonAssistantChatOptions = {
+            integrationID: "84c4987e-0293-4808-a90a-daea336c2082", // Your integration ID
+            region: "us-south", // Your region
+            serviceInstanceID: "41e2d90e-a09d-490a-be1f-f2bce29235cd", // Your service instance ID
+            onLoad: onLoad,
+        };
+
+        setTimeout(function() {
+            const t = document.createElement('script');
+            t.src = "https://web-chat.global.assistant.watson.appdomain.cloud/versions/" + (window.watsonAssistantChatOptions.clientVersion || 'latest') + "/WatsonAssistantChatEntry.js";
+            document.head.appendChild(t);
         });
     </script>
 </body>
